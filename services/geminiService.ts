@@ -1,20 +1,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { InventoryItem } from '../types';
 
-const API_KEY = process.env.API_KEY;
-
-// Conditionally initialize the AI client to prevent errors if API_KEY is missing.
-const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
-
-if (!ai) {
-  console.warn("API_KEY environment variable not set. AI features will be disabled.");
-}
+// FIX: Use process.env.API_KEY as per guidelines.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const analyzeInventory = async (inventory: InventoryItem[]): Promise<string> => {
-  if (!ai) {
-    return Promise.resolve("AI features are disabled because the API key is not configured.");
-  }
-
   if (inventory.length === 0) {
     return Promise.resolve("There are no items in the inventory to analyze.");
   }
@@ -57,9 +47,6 @@ export const suggestBOM = async (
   finishedGoodName: string,
   rawMaterials: InventoryItem[]
 ): Promise<{ rawMaterialName: string; quantity: number }[]> => {
-  if (!ai) {
-    throw new Error("AI features are disabled because the API key is not configured.");
-  }
   if (rawMaterials.length === 0) {
     return [];
   }
@@ -110,13 +97,13 @@ export const suggestBOM = async (
       },
     });
 
-    const jsonText = response.text.trim();
-    if (!jsonText) {
+    const jsonStr = response.text.trim();
+    if (!jsonStr) {
       console.warn("Gemini API returned an empty response for BOM suggestion.");
       return [];
     }
 
-    const result = JSON.parse(jsonText);
+    const result = JSON.parse(jsonStr);
     return result.components || [];
 
   } catch (error) {

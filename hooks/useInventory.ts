@@ -37,7 +37,7 @@ export function useInventory({ rawMaterialSheetApiUrl, finishedGoodsSheetApiUrl 
 
   const loadItemsFromSheets = useCallback(async () => {
     if (!rawMaterialSheetApiUrl) {
-      console.warn("SheetDB API URL not configured.");
+      console.debug("SheetDB API URL not configured. Using local storage.");
       return null;
     }
     try {

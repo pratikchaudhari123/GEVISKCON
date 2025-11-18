@@ -47,6 +47,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({ items, isOpen, onClose }) 
         setMessages([]); // Clear previous conversation
 
         try {
+          // FIX: Use process.env.API_KEY as per guidelines.
           const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
           const newChatSession = ai.chats.create({
             model: 'gemini-2.5-flash',

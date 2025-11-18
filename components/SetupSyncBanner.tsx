@@ -14,9 +14,9 @@ export const SetupSyncBanner: React.FC<SetupSyncBannerProps> = ({ onConfigure })
         </div>
       </div>
       <div className="flex-1">
-        <h3 className="text-lg font-semibold text-indigo-800 dark:text-indigo-200">Connect to Google Sheets for Real-Time Sync</h3>
+        <h3 className="text-lg font-semibold text-indigo-800 dark:text-indigo-200">Optional: Cloud Sync via Google Sheets</h3>
         <p className="text-sm text-indigo-700 dark:text-indigo-300 mt-1">
-          Automatically back up your inventory and keep your data safe. Any changes you make here—adding, editing, or deleting items—will instantly reflect in your sheet.
+          Automatically back up your inventory to the cloud. If you don't set this up, data will only be saved to this browser.
         </p>
       </div>
     </div>
@@ -24,7 +24,7 @@ export const SetupSyncBanner: React.FC<SetupSyncBannerProps> = ({ onConfigure })
       onClick={onConfigure}
       className="flex-shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
     >
-      Configure Sync Now
+      Configure Sync
     </button>
   </div>
 );

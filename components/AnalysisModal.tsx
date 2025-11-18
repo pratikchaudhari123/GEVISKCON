@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { analyzeInventory } from '../services/geminiService';
-import { fetchAllItemsFromSheets } from '../services/sheetService';
+import { InventoryItem } from '../types';
 import { Loader } from './Loader';
 import { Modal } from './Modal';
 
 interface AnalysisModalProps {
   isOpen: boolean;
   onClose: () => void;
-  rawMaterialApiUrl: string;
-  finishedGoodsApiUrl: string;
+  items: InventoryItem[];
 }
 
 // Simple markdown to HTML renderer
@@ -21,49 +20,40 @@ const renderMarkdown = (text: string) => {
 };
 
 
-export const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, rawMaterialApiUrl, finishedGoodsApiUrl }) => {
+export const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, items }) => {
   const [analysis, setAnalysis] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      const performLiveAnalysis = async () => {
+      const performAnalysis = async () => {
         setIsLoading(true);
         setAnalysis('');
 
-        if (!rawMaterialApiUrl) {
-          setAnalysis('Data source not configured. Please set your SheetDB API URL in Settings.');
+        if (!items || items.length === 0) {
+          setAnalysis('No inventory data found to analyze. Add some raw materials first.');
           setIsLoading(false);
           return;
         }
 
         try {
-          setStatus('Fetching latest data from Google Sheets...');
-          const liveItems = await fetchAllItemsFromSheets(rawMaterialApiUrl, finishedGoodsApiUrl);
-
-          if (!liveItems || liveItems.length === 0) {
-            setAnalysis('No inventory data found in your Google Sheets to analyze.');
-            setIsLoading(false);
-            return;
-          }
-
-          setStatus('Analyzing your live inventory...');
-          const result = await analyzeInventory(liveItems);
+          setStatus('Analyzing your current inventory...');
+          const result = await analyzeInventory(items);
           setAnalysis(result);
 
         } catch (error) {
-          console.error('Failed to perform live analysis:', error);
-          setAnalysis('Failed to fetch or analyze live data. Please check your SheetDB URL, internet connection, and ensure the sheet is configured correctly.');
+          console.error('Failed to perform analysis:', error);
+          setAnalysis('Failed to analyze data. Please check your internet connection and API key.');
         } finally {
           setIsLoading(false);
           setStatus('');
         }
       };
 
-      performLiveAnalysis();
+      performAnalysis();
     }
-  }, [isOpen, rawMaterialApiUrl, finishedGoodsApiUrl]);
+  }, [isOpen, items]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="AI Inventory Analysis">

@@ -172,7 +172,7 @@ export default function App() {
 
   const syncMultipleItems = async (itemsToSync: InventoryItem[]) => {
     if (!sheetDbUrl) {
-      console.warn("Sync skipped: SheetDB URL not configured.");
+      // Silently skip if not configured
       return;
     }
     setSyncState({ status: 'syncing', message: `Syncing ${itemsToSync.length} items...` });
@@ -485,7 +485,7 @@ export default function App() {
           <InventoryItemForm item={selectedItem} onSave={handleSaveItem} onClose={handleCloseModals} allItems={items} />
       </Modal>
       <UpdateStockModal item={selectedItem} isOpen={isUpdateStockModalOpen} onClose={() => setUpdateStockModalOpen(false)} onUpdate={handleUpdateStock} />
-      <AnalysisModal isOpen={isAnalysisModalOpen} onClose={() => setAnalysisModalOpen(false)} rawMaterialApiUrl={rawMaterialSheetApiUrl} finishedGoodsApiUrl={finishedGoodsSheetApiUrl} />
+      <AnalysisModal isOpen={isAnalysisModalOpen} onClose={() => setAnalysisModalOpen(false)} items={items} />
       <SettingsModal isOpen={isSettingsModalOpen} onClose={() => setSettingsModalOpen(false)} onSave={handleSaveSettings} savedSettings={{ notificationEmail, lowStockThreshold, emailJsServiceId, emailJsTemplateId, emailJsPublicKey, sheetDbUrl }} />
       <RecordSaleModal 
         isOpen={isRecordSaleModalOpen}
